@@ -1,0 +1,112 @@
+NOTE: 1. To keep it simple, the following example demonstrates use of the RMI feature when 
+         the client and the server are running on the same machine. If you want to run them 
+         on 2 different machines, you would have to make changes to how the server is bound
+         to the registry and how the client accesses the server.
+      2. While running on UNIX, use : as the path separator in calls to JAVA and JAVAC. ; is used
+         used as path separator only for Windows.
+      3. Important thing to note in this example is that for server the system path should be 
+         updated appropriately with MCR. The client does not need MCR.
+
+
+1. MCC command to compile the Java Package component:
+
+    mcc -W 'java:dataTypesComp,dataTypesClass' createEmptyStruct.m updateField.m -v
+
+2. Compile the server java code:
+
+    javac -classpath <matlabroot>\toolbox\javabuilder\jar\javabuilder.jar;<directory_containing_component>\dataTypesComp.jar NativeCellStructServer.java 
+
+3. Compile the client java code:
+
+    javac -classpath <matlabroot>\toolbox\javabuilder\jar\javabuilder.jar;<directory containing component>\dataTypesComp.jar NativeCellStructClient.java 
+
+4. Running the client and server : 
+
+    To run the application, open 2 different DOS/UNIX windows. Make sure that for Windows, <matlabroot>/bin/<arch> 
+    is on the system path and for UNIX, LD_LIBRARY_PATH/DYLD_LIBRARY_PATH are set properly
+
+    4a. Running the server:
+        java -classpath .;<directory_containing_component>\dataTypesComp.jar;<matlabroot>\toolbox\javabuilder\jar\javabuilder.jar 
+             -Djava.rmi.server.codebase="file:///<matlabroot>/toolbox/javabuilder/jar/javabuilder.jar file:///<directory_containing_component>/dataTypesComp.jar" NativeCellStructServer
+             
+    4b. Running the client:
+        java -classpath .;<directory_containing_component>\dataTypesComp.jar;<matlabroot>\toolbox\javabuilder\jar\javabuilder.jar NativeCellStructClient
+
+5.  Expected outputs for server and client windows:
+
+    5a.  If successful, you should see the following output in the window running the server:
+    
+            Please wait for the server registration notification.
+            Server registered and running successfully!!
+
+            EVENT 1: Initializing the structure on server and sending it to client:
+                     Initialized empty structure:
+
+                     Name: ' '
+                     Address: []
+
+
+            ##################################
+
+            EVENT 3: Partially initialized structure as received by server:
+
+                     Name: ' '
+                     Address: [1x1 struct]
+
+               Address field as initialized from the client:
+
+                     Street: '3, Apple Hill Drive'
+                     City: 'Natick'
+                     State: 'MA'
+                     Zip: '01760'
+
+            ##################################
+
+            EVENT 4: Updating 'Name' field before sending the structure back to the client
+
+                     Name: 'MathWorks'
+                     Address: [1x1 struct]
+
+
+            ##################################
+
+
+
+    5b.  If successful, you should see the following output in the window running the client:
+
+            Running the client application!!
+
+            EVENT 2: Initialized structure as received in client applications:
+
+                     1x1 struct array with fields:
+                        Name
+                        Address
+
+                Updating the 'Address' field to :
+
+                     1x1 struct array with fields:
+                        Street
+                        City
+                        State
+                        Zip
+
+            #################################
+
+
+            EVENT 5: Final structure as received by client:
+
+                     1x1 struct array with fields:
+                        Name
+                        Address
+
+                Address field:
+
+                     1x1 struct array with fields:
+                        Street
+                        City
+                        State
+                        Zip
+
+            #################################
+
+

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+        <title>VarArg Java Servlet Example</title>
+    </head>
+    <body>
+
+    <h1>VarArg Java Servlet Example</h1>
+    
+    <!--
+       <form action="http://localhost:8080/VarArgServletClass">
+    -->
+       <form action="VarArgServlet">
+        <table border="0" >
+            <thead>
+                <col width="60%">
+                <col width="40%">
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        Data to Plot<br>
+                        <input type="text" name="Data" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Optional Input<br>
+                        <table border="1" title="Optional Input">
+                        <td>Line Color<br>
+                        <select name="LineColor">
+                            <option selected>Default</option>
+                            <option>Red</option>
+                            <option>Green</option>
+                            <option>Blue</option>
+                            <option>Black</option>
+                            <option>Yellow</option>
+                            <option>Magenta</option>
+                            <option>Cyan</option>
+                        </select></td>
+                        <td>Border Color<br>
+                        <select name="BorderColor">
+                            <option selected>Default</option>
+                            <option>Red</option>
+                            <option>Green</option>
+                            <option>Blue</option>
+                            <option>Black</option>
+                            <option>Yellow</option>
+                            <option>Magenta</option>
+                            <option>Cyan</option>
+                        </select></td>
+                    </table></td>
+                    <td>Optional Output<br> 
+                        <table border="1" title="Optional Output">
+                                <tr><td>
+                                    <input type="radio" name="optoutput" value="None" checked/>None
+                                </td></tr>
+                                <tr><td>
+                                    <input type="radio" name="optoutput" value="Mean" />Mean
+                                </td></tr>
+                                <tr><td>
+                                    <input type="radio" name="optoutput" value="StdDev" />Mean & Std Dev
+                                </td></tr>
+                        </table>
+
+                    </td>
+                </tr>
+                <tr>
+                    <!-- Submit -->
+                    <td colspan="3" align="center">
+                        <input type="submit" value="Display Plot" name="DoPLot" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </form>
+
+    
+    </body>
+</html>
+

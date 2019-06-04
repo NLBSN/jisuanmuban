@@ -1,0 +1,96 @@
+NOTE: 1. To keep it simple, the following example demonstrates use of the RMI feature when 
+         the client and the server are running on the same machine. If you want to run them 
+         on 2 different machines, you would have to make changes to how the server is bound
+         to the registry and how the client accesses the server.
+      2. While running on UNIX, use : as the path separator in calls to JAVA and JAVAC. ; is used
+         used as path separator only for Windows.
+      3. This example is a combination of 2 examples. The goal of this example is to demonstrate
+         the difference between the Factory and Proxy implementations. The first example shows use
+         of Proxy implementation and the second one shows use of Factory implementation.
+      4. The component created using MCC command is the same for the 2 examples.
+
+
+1. MCC command to compile the Java Package component:
+
+    mcc -v -W 'java:FactoryProxyComp,FactoryProxyClass' initGlobalVar.m getGlobalVar.m  
+
+2. Compile the server java codes:
+
+    javac -classpath <matlabroot>\toolbox\javabuilder\jar\javabuilder.jar;<directory_containing_component>\FactoryProxyComp.jar ServerUsingProxyAPI.java 
+    javac -classpath <matlabroot>\toolbox\javabuilder\jar\javabuilder.jar;<directory_containing_component>\FactoryProxyComp.jar ServerUsingFactoryAPI.java 
+
+3. Compile the client java codes:
+
+    javac -classpath <matlabroot>\toolbox\javabuilder\jar\javabuilder.jar;<directory containing component>\FactoryProxyComp.jar ClientUsingProxyAPI.java 
+    javac -classpath <matlabroot>\toolbox\javabuilder\jar\javabuilder.jar;<directory containing component>\FactoryProxyComp.jar ClientUsingFactoryAPI.java 
+
+4. Running the client and server : 
+
+    To run each applications, open 2 different DOS/UNIX windows. Make sure that for Windows, <matlabroot>/bin/<arch> 
+    is on the system path and for UNIX, LD_LIBRARY_PATH/DYLD_LIBRARY_PATH are set properly
+
+    4a. Running the server (Please run one server in one window):
+
+        java -classpath .;<directory_containing_component>\FactoryProxyComp.jar;<matlabroot>\toolbox\javabuilder\jar\javabuilder.jar 
+             -Djava.rmi.server.codebase="file:///<matlabroot>/toolbox/javabuilder/jar/javabuilder.jar file:///<directory_containing_component>/FactoryProxyComp.jar" ServerUsingProxyAPI             
+        or
+
+        java -classpath .;<directory_containing_component>\FactoryProxyComp.jar;<matlabroot>\toolbox\javabuilder\jar\javabuilder.jar 
+             -Djava.rmi.server.codebase="file:///<matlabroot>/toolbox/javabuilder/jar/javabuilder.jar file:///<directory_containing_component>/FactoryProxyComp.jar" ServerUsingFactoryAPI
+              
+
+    4b. Running the client (Make sure to run the Proxy client for Proxy server and Factory client for Factory server):
+
+        java -classpath .;<directory_containing_component>\FactoryProxyComp.jar;<matlabroot>\toolbox\javabuilder\jar\javabuilder.jar ClientUsingProxyAPI
+
+        or
+
+        java -classpath .;<directory_containing_component>\FactoryProxyComp.jar;<matlabroot>\toolbox\javabuilder\jar\javabuilder.jar ClientUsingFactoryAPI
+
+5.  Expected outputs for server and client windows:
+
+    5a.  If successful, you should see the following output in the window running the servers:
+    
+            Please wait for the server registration notification.            
+            Server registered and running successfully!!
+
+            
+    5b.  If successful, you should see the following output in the window running the clients:
+
+         The output when the Proxy API is used:
+
+                        Running the client application!!
+                        Getting the value of global variable before initializing through first stub  = []
+                        Getting the value of global variable before initializing through second stub = []
+
+                        *** Initializing global variable through first stub to value of 10.0 ***
+
+                        Getting the value of global variable through first stub  = 10
+                        Getting the value of global variable through second stub = 10
+
+                        *** In case of Proxy implementation, both the stubs share the same workspace. 
+                        As a result, change made to the global variable through first stub can be
+                        seen when the same global variable is accessed through second stub. This value 
+                        will be retained by server and if the client application is run again, the server  
+                        will notify presence of value and the retained value will be returned to the client ***
+
+            
+         The output when the Factory API is used:
+
+                        Running the client application!!
+                        Getting the value of global variable before initializing through first stub  = []
+                        Getting the value of global variable before initializing through second stub = []
+
+                        *** Initializing global variable through first stub to value of 10.0 ***
+
+                        Getting the value of global variable through first stub  = 10
+                        Getting the value of global variable through second stub = []
+
+                        *** In case of Factory implementation, stubs do not share workspace. 
+                        As a result, change made to the global variable through first stub cannot be
+                        seen when the same global variable is accessed through second stub. The 
+                        value of the global variable will not be retained even if the client 
+                        application is run again. ***
+
+                        
+
