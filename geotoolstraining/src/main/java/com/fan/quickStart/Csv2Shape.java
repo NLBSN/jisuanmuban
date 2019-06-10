@@ -43,7 +43,9 @@ public class Csv2Shape {
         // Set cross-platform look & feel for compatability
         UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 
-        File file = JFileDataStoreChooser.showOpenFile("csv", null);
+        // File file = JFileDataStoreChooser.showOpenFile("csv", new File("F:\\data\\geotools"),null);
+        File file = new File("F:\\data\\geotools\\locations.csv");
+        System.out.println("------------------ 读到文件，开始执行--------------");
         if (file == null) {
             return;
         }
@@ -56,15 +58,17 @@ public class Csv2Shape {
          *
          * See also the createFeatureType method below for another, more flexible approach.
          */
-        final SimpleFeatureType TYPE =
-                DataUtilities.createType(
-                        "Location",
-                        "the_geom:Point:srid=4326,"
-                                + // <- the geometry attribute: Point type
-                                "name:String,"
-                                + // <- a String attribute
-                                "number:Integer" // a number attribute
-                );
+        /*final SimpleFeatureType TYPE = DataUtilities.createType(
+                "Location",
+                "the_geom:Point," //the_geom:Point:srid=4326,
+                        + // <- the geometry attribute: Point type
+                        "name:String,"
+                        + // <- a String attribute
+                        "number:Integer" // a number attribute
+        );*/
+        // 这是对上面这个方法的优化
+        final SimpleFeatureType TYPE = createFeatureType();
+
         System.out.println("TYPE:" + TYPE);
         // 读取CSV文件并为每条记录创建一个功能
         /*
@@ -75,6 +79,7 @@ public class Csv2Shape {
         /*
          * GeometryFactory will be used to create the geometry attribute of each feature,
          * using a Point object for the location.
+         * GeometryFactory将用于创建每个要素的几何属性，使用Point对象作为位置。
          */
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
@@ -122,12 +127,13 @@ public class Csv2Shape {
 
         /*
          * TYPE is used as a template to describe the file contents
+         * TYPE用作模板来描述文件内容
          */
         newDataStore.createSchema(TYPE);
 
-        // 将特征数据写入shapefile
         /*
          * Write the features to the shapefile
+         * 将特征数据写入shapefile
          */
         Transaction transaction = new DefaultTransaction("create");
 
@@ -142,6 +148,14 @@ public class Csv2Shape {
          * - Not all data types are supported (example Timestamp represented as Date)
          *
          * Each data store has different limitations so check the resulting SimpleFeatureType.
+         *
+         * Shapefile格式有几个限制：
+         *  - “the_geom”始终是第一个，用于几何属性名称
+         *  - “the_geom”必须是Point，MultiPoint，MuiltiLineString，MultiPolygon类型
+         *  - 属性名称的长度有限
+         *  - 并非所有数据类型都受支持（示例时间戳表示为日期）
+         *
+         *  每个数据存储都有不同的限制，因此请检查生成的SimpleFeatureType。
          */
         System.out.println("SHAPE:" + SHAPE_TYPE);
 
@@ -175,6 +189,7 @@ public class Csv2Shape {
 
     /**
      * Prompt the user for the name and path to use for the output shapefile
+     * 提示用户输入shapefile的名称和路径
      *
      * @param csvFile the input csv file used to create a default shapefile name
      * @return name and path for the shapefile as a new File object
@@ -201,6 +216,33 @@ public class Csv2Shape {
         }
 
         return newFile;
+    }
+
+    /**
+     * Here is how you can use a SimpleFeatureType builder to create the schema for your shapefile dynamically.
+     *
+     * <p>This method is an improvement on the code used in the main method above (where we used
+     * DataUtilities.createFeatureType) because we can set a Coordinate Reference System for the
+     * FeatureType and a a maximum field length for the 'name' field dddd
+     *
+     * 以下是如何使用SimpleFeatureType构建器动态创建shapefile的架构。
+     *  <p>此方法是对上面主方法（我们使用DataUtilities.createFeatureType）中使用的代码的改进，因为我们可以为FeatureType设置坐标参考系统，为'name'字段设置最大字段长度dddd
+     */
+    private static SimpleFeatureType createFeatureType() {
+
+        SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+        builder.setName("Location");
+        builder.setCRS(DefaultGeographicCRS.WGS84); // <- Coordinate reference system
+
+        // add attributes in order
+        builder.add("the_geom", Point.class);
+        builder.length(15).add("Name", String.class); // <- 15 chars width for name field
+        builder.add("number", Integer.class);
+
+        // build the type
+        final SimpleFeatureType LOCATION = builder.buildFeatureType();
+
+        return LOCATION;
     }
 
 
