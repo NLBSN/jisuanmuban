@@ -25,7 +25,8 @@ public class Quickstart {
      */
     public static void main(String[] args) throws Exception {
         // display a data store file chooser dialog for shapefiles
-        File file = JFileDataStoreChooser.showOpenFile("shp", null);
+        // File file = JFileDataStoreChooser.showOpenFile("shp", new File("F:\\data\\geotools\\50m_cultural"), null);
+        File file = new File("F:\\data\\geotools\\50m_cultural\\ne_50m_admin_0_boundary_lines_land.shp");
         if (file == null) {
             return;
         }
