@@ -224,9 +224,9 @@ public class Csv2Shape {
      * <p>This method is an improvement on the code used in the main method above (where we used
      * DataUtilities.createFeatureType) because we can set a Coordinate Reference System for the
      * FeatureType and a a maximum field length for the 'name' field dddd
-     *
+     * <p>
      * 以下是如何使用SimpleFeatureType构建器动态创建shapefile的架构。
-     *  <p>此方法是对上面主方法（我们使用DataUtilities.createFeatureType）中使用的代码的改进，因为我们可以为FeatureType设置坐标参考系统，为'name'字段设置最大字段长度dddd
+     * <p>此方法是对上面主方法（我们使用DataUtilities.createFeatureType）中使用的代码的改进，因为我们可以为FeatureType设置坐标参考系统，为'name'字段设置最大字段长度dddd
      */
     private static SimpleFeatureType createFeatureType() {
 
