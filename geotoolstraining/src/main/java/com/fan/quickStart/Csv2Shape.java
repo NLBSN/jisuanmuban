@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.UIManager;
 
-import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.Transaction;
 import org.geotools.data.collection.ListFeatureCollection;
@@ -49,7 +48,6 @@ public class Csv2Shape {
         if (file == null) {
             return;
         }
-
 
         // 创建一个FeatureType来描述我们从CSV文件导入的数据并写入shapefile
         /*
@@ -122,8 +120,7 @@ public class Csv2Shape {
         params.put("url", newFile.toURI().toURL());
         params.put("create spatial index", Boolean.TRUE);
 
-        ShapefileDataStore newDataStore =
-                (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
+        ShapefileDataStore newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
 
         /*
          * TYPE is used as a template to describe the file contents
